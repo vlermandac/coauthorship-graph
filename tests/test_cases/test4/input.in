@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<dblp>
+<article>
+	<author>A</author>
+	<author>B</author>
+	<year>0</year>
+</article>
+<article>
+	<author>B</author>
+	<author>C</author>
+	<year>5</year>
+</article>
+<article>
+	<author>A</author>
+	<author>C</author>
+	<year>9</year>
+</article>
+<article>
+	<author>B</author>
+	<author>A</author>
+	<year>0</year>
+</article>
+<article>
+	<author>C</author>
+	<author>B</author>
+	<year>5</year>
+</article>
+<article>
+	<author>C</author>
+	<author>A</author>
+	<year>9</year>
+</article>
+
+</dblp>

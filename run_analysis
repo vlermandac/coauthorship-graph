@@ -1,0 +1,46 @@
+#!/bin/bash
+
+prj_root=$(pwd)
+prj_data="${prj_root}/data/"
+partitions_dir="${prj_data}/partitions/"
+input_file="${prj_data}dblp.xml"
+
+dblp_url="https://dblp.uni-trier.de/xml/dblp.xml.gz"
+filename="dblp.xml"
+pub_types=("article" "inproceedings")
+partitions_number=8
+
+# Check if the file with prefix 'dblp.xml' exists in the project
+if [ $(find $prj_root -type f -name "${filename}*") ]; then
+    echo "File already exists, moving it to ${prj_data} directory (if it was already there, ignore this)."
+    find $prj_root -type f -name "${filename}*" -exec mv {} ${prj_data} \;
+else
+    echo "File does not exist. Downloading..."
+    wget -O "${prj_data}/${filename}.gz" "$dblp_url"
+fi
+
+# Check if the downloaded file exists and then decompress it
+[[ -f "${prj_data}/${filename}.gz" ]] &&  \
+  echo "Decompressing the file..." && gzip -d "${prj_data}/${filename}.gz"
+
+# Create partitions directory if it doesn't exists
+mkdir -p "$partitions_dir"
+
+# Create partitions if they haven't been created yet
+[[ ! $(find "$partitions_dir" -name "*.xml") ]] &&  \
+  echo "Creating ${partitions_number} partitions from ${filename}" &&  \
+  ./split_file ${input_file} $partitions_number
+
+# Publication type results directories
+for pub_type in "${pub_types[@]}"; do
+    pub_type_dir="${prj_root}/results/${pub_type}"
+    mkdir -p "${pub_type_dir}"
+
+    # Output directory
+    output_dir="${pub_type_dir}/$(date -u +%H%M%S_%d_%m_%Y)"
+    mkdir -p "$output_dir"
+
+    ./builds/CoauthorGraphAnalyze -t $pub_type -i $input_file -o $output_dir -p $partitions_number &
+done
+
+wait

@@ -1,0 +1,3 @@
+-std=c++17
+-O3
+-I/Users/vlermanda/Main/PG/xml_graph/src/include/
